@@ -9,13 +9,13 @@ class WWidget:
         for k in self.keys():
             self.props_inicial[k] = self[k]
 
-        self.nomeObj = self._name[1:]
+        self.nomeVar = self._name[1:]
         self.idx = 0
             
     def code(self, props_diff):
         write = "### %s ###\n" % self.widgetName
-        write += "%s = %s(top, **%s)\n" % (self.nomeObj, self.widgetName.capitalize(), props_diff)
-        write += "%s.place(x=%s, y=%s)\n" % (self.nomeObj, self.winfo_x(), self.winfo_y())
+        write += "%s = %s(%s, **%s)\n" % (self.nomeVar, self.widgetName.capitalize(), self.master.nomeVar, props_diff)
+        write += "%s.place(x=%s, y=%s)\n" % (self.nomeVar, self.winfo_x(), self.winfo_y())
         write += "#################\n\n"
         return(write)
             
@@ -38,7 +38,9 @@ class WLabelFrame(LabelFrame, WWidget):
         
     def code(self, props_diff):
         write = "### %s ###\n" % self.widgetName
-        write += "%s = LabelFrame(top, **%s)\n" % (self.nomeObj, props_diff)
+        write += "%s = LabelFrame(%s, **%s)\n" % (self.nomeVar, self.master.nomeVar, props_diff)
+        write += "%s.place(x=%s, y=%s)\n" % (self.nomeVar, self.winfo_x(), self.winfo_y())
+        write += "#################\n\n"
         return(write)
                 
 
@@ -113,8 +115,8 @@ class WOptionMenu(OptionMenu, WWidget):
         write += "opc = IntVar()\n"
         write += "lista = [1,2,3]\n"
         write += "opc.set(lista[0])\n"
-        write += "%s = OptionMenu(top, opc, *lista, **%s)\n" % (self.nomeObj, props_diff)
-        write += "%s.place(x=%s, y=%s)\n" % (self.nomeObj, self.winfo_x(), self.winfo_y())
+        write += "%s = OptionMenu(%s, opc, *lista, **%s)\n" % (self.nomeVar, self.master.nomeVar, props_diff)
+        write += "%s.place(x=%s, y=%s)\n" % (self.nomeVar, self.winfo_x(), self.winfo_y())
         write += "#################\n\n"
         return(write)
 
@@ -138,7 +140,7 @@ class WRadiobutton(LabelFrame, WWidget):
 
     def code(self, props_diff):
         write = "### Radiobutton ###\n"
-        write += "lf = LabelFrame(top, text='Radio Buttons')\n"
+        write += "lf = LabelFrame(%s, text='Radio Buttons')\n" % self.master.nomeVar
         write += "opc = IntVar()\n"
         write += "dic = {'um':1, 'dois':2,'tres':3}\n"
         write += "for k, w in dic.items():\n"

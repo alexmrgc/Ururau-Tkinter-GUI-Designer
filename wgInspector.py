@@ -68,7 +68,7 @@ class WidgetInspector(Toplevel):
         e.bind('<FocusOut>', self.set_widget_name)
         e.bind('<Return>', self.set_widget_name)        
         e.grid(row=0, column=1)
-        e.insert(0, self.wg.nomeObj)
+        e.insert(0, self.wg.nomeVar)
 
         # frame propriedades
         self.frame_prop = LabelFrame(self.main.frame_inner, text='Propriedades:')

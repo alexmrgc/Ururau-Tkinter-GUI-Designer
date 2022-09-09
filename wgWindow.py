@@ -4,6 +4,7 @@
 from tkinter import *
 from wgInspector import *
 from tkinter.filedialog import asksaveasfilename
+import sys
 
 
 class WidgetWindow(Toplevel):
@@ -13,7 +14,11 @@ class WidgetWindow(Toplevel):
         self.title('Widget Window')
         self.inspector = inspector
         self.filename = ''
-        self.nomeObj = self._name[1:]
+        self.nomeVar = self._name[1:]
+        self.props_inicial = {}
+        for k in self.keys():
+            self.props_inicial[k] = self[k]
+
         # se fechar a janela abre dialogo de salvar arqquivo
         self.protocol('WM_DELETE_WINDOW', self.salvar)
         
@@ -32,24 +37,28 @@ class WidgetWindow(Toplevel):
         self.inspector.inspect_widget(event.widget)
 
     def salvar(self):        
-        code = self._parser()
+        intro = """#!/usr/bin/python\n#-*- coding: utf-8 -*-\n\nfrom tkinter import *\n\n"""
+        window = """%s = Tk()\n%s.geometry('%s')\n\n""" % (self.nomeVar, self.nomeVar, self.winfo_geometry())
+        wg_code = self._parser_widget()
+        rodape = "\n\n%s.mainloop()" % self.nomeVar
+        
+        code = intro + window + wg_code + rodape
         print(code)
 
-##        # message file dialog
-##        if self.filename:
-##            with open(self.filename,'w') as arq:
-##                arq.write(code)
-##        else:
-##            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
-##            with open(fn,'w') as arq:
-##                arq.write(code)
-##
-##            self.title(fn)
-##            self.filename = fn
+        # message file dialog
+        if self.filename:
+            with open(self.filename,'w') as arq:
+                arq.write(code)
+        else:
+            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
+            with open(fn,'w') as arq:
+                arq.write(code)
 
-    def _parser(self):                        
-        code = """#!/usr/bin/python\n#-*- coding: utf-8 -*-\n\nfrom tkinter import *\n\ntop = Tk()\ntop.geometry('%s')\n\n""" % self.winfo_geometry()
+            self.title(fn)
+            self.filename = fn
 
+    def _parser_widget(self):
+        wg_code = ''
         # pega todos os widgets dentro de window
         for wg in self.children.values():
             props_atual = {}
@@ -64,12 +73,10 @@ class WidgetWindow(Toplevel):
                 if props_atual[p] != wg.props_inicial[p]:
                     props_diff[p] = props_atual[p]
 
-            # add widget ao code
-            write = wg.code(props_diff)
-            code += write
-
-        code += "\n\ntop.mainloop()"
-        return(code)
+            wg_code += wg.code(props_diff)
+            
+        
+        return(wg_code)
 
         
 if __name__=='__main__':

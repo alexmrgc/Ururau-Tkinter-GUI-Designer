@@ -34,7 +34,7 @@ class WidgetToolbox(Tk):
         text = Button(frame_main, text='Text', command=lambda: self.add_widget('WText'))
         scale = Button(frame_main, text='Scale', command=lambda: self.add_widget('WScale'))
         check = Button(frame_main, text='Checkbutton', command=lambda: self.add_widget('WCheckbutton'))
-        drop = Button(frame_main, text='Dropdown', command=lambda: self.add_widget('WOptionMenu'))
+        drop = Button(frame_main, text='OptionMenu', command=lambda: self.add_widget('WOptionMenu'))
         radio = Button(frame_main, text='RadioButton', command=lambda: self.add_widget('WRadiobutton'))
 
         # layout frame top
