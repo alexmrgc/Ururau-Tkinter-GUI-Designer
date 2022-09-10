@@ -24,7 +24,7 @@ class ScrollerLabelFrame(Frame):
         self.frame_inner.bind('<Configure>', lambda e: self.canvas.configure(scrollregion=self.canvas.bbox('all')))
 
         # exibe o frame externo, canvas e scrollbar
-        self.frame_out.pack()
+        self.frame_out.pack(fill='both', expand=True)
         self.canvas.pack(side='left', fill='both', expand=True)
         self.scrollbar.pack(side='right', fill='y', expand=True)
         # exibe frame_inner dentro de canvas
@@ -42,7 +42,7 @@ class WidgetInspector(Toplevel):
     def __init__(self):
         super().__init__()
         self.resizable(True, True)
-        self.geometry('390x280+780+0')
+        self.geometry('390x780+780+0')
         self.title('Widget Inspector')
         
     def set_toolbox(self, tb):
@@ -85,11 +85,15 @@ class WidgetInspector(Toplevel):
             exec("e_%s.grid(row=%i, column=1)" % (p, i))
             i += 1
 
+        # frame erro
+        self.frame_erro = LabelFrame(self.main.frame_inner, text='Erro:')
+        self.erro = Label(self.frame_erro, text=' ')
+        self.erro.pack()
+
         # layout
         self.frame_code.grid(row=0, columnspan=2, sticky=EW)
-        self.frame_prop.grid(row=1, columnspan=2, sticky=EW)
-        
-
+        self.frame_prop.grid(row=1, columnspan=2, sticky=EW)      
+        self.frame_erro.grid(row=2, columnspan=2, sticky=EW)
 
     def set_widget_name(self, event):
         nome = event.widget.get()
@@ -100,7 +104,11 @@ class WidgetInspector(Toplevel):
         e = event.widget
         valor = e.get()
         wg = e.wg
-        wg[e.prop] = valor    
+        try:
+            wg[e.prop] = valor
+        except TclError as erro:
+            self.erro['text'] = erro
+        
         
 
 if __name__=='__main__':

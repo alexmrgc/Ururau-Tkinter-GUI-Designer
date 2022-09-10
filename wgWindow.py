@@ -7,17 +7,14 @@ from tkinter.filedialog import asksaveasfilename
 import sys
 
 
-class WidgetWindow(Toplevel):
+class WidgetWindow(Toplevel, WWidget):
     def __init__(self, inspector):
         super().__init__()
+        WWidget.__init__(self)
         self.geometry('350x400+230+20')
         self.title('Widget Window')
         self.inspector = inspector
         self.filename = ''
-        self.nomeVar = self._name[1:]
-        self.props_inicial = {}
-        for k in self.keys():
-            self.props_inicial[k] = self[k]
 
         # se fechar a janela abre dialogo de salvar arqquivo
         self.protocol('WM_DELETE_WINDOW', self.salvar)
