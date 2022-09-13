@@ -21,7 +21,7 @@ class WidgetToolbox(Tk):
 
         # frame top
         frame_top = LabelFrame(self, text='Actions')
-        novo = Button(frame_top, text='novo', state=DISABLED)
+        self.novo = Button(frame_top, text='novo', command=self.new_window, state=DISABLED)
         abrir = Button(frame_top, text='abrir', state=DISABLED)
         salvar = Button(frame_top, text='salvar', command=self.window.salvar)
         # frame main
@@ -39,7 +39,7 @@ class WidgetToolbox(Tk):
 
         # layout frame top
         frame_top.pack(side=TOP, expand=True, fill=X)
-        novo.pack(side=LEFT, expand=True, fill=X)
+        self.novo.pack(side=LEFT, expand=True, fill=X)
         abrir.pack(side=LEFT, expand=True, fill=X)
         salvar.pack(side=RIGHT, expand=True, fill=X)
         # layout frame main
@@ -54,12 +54,19 @@ class WidgetToolbox(Tk):
         check.pack(fill=X)
         drop.pack(fill=X)
         radio.pack(fill=X)
-        
+
+    def new_window(self):
+        pass
+##        self.inspector.destroy()
+##        self.inspector = WidgetInspector()
+##        self.window = WidgetWindow(self.inspector)
+##        self.window.set_toolbox(self)
+    
     def add_widget(self, tipo):
-        # cria o widget
         strWg = tipo + str(self.idx)
         strWg = strWg.lower()
 
+        # cria o widget
         if tipo == 'WOptionMenu':
             exec("%s = WOptionMenu(self.window)" % strWg)
         else:
@@ -83,6 +90,8 @@ if __name__=='__main__':
     window = WidgetWindow(inspector)
     toolbox = WidgetToolbox(window, inspector)
     inspector.set_toolbox(toolbox)
+    window.set_toolbox(toolbox)
+
 
 ##    print('Widget ToolBox ok')
 ##    toolbox.mainloop()

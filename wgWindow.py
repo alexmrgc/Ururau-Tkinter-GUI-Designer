@@ -17,7 +17,10 @@ class WidgetWindow(Toplevel, WWidget):
         self.filename = ''
 
         # se fechar a janela abre dialogo de salvar arqquivo
-        self.protocol('WM_DELETE_WINDOW', self.salvar)
+        self.protocol('WM_DELETE_WINDOW', self.close)
+
+    def set_toolbox(self, tb):
+        self.toolbox = tb
         
     def drag_start(self, event):
         wg = event.widget
@@ -33,6 +36,13 @@ class WidgetWindow(Toplevel, WWidget):
     def on_release(self, event):
         self.inspector.inspect_widget(event.widget)
 
+    def close(self):
+        self.salvar()
+        self.toolbox.novo['state'] = 'normal'
+        self.inspector.destroy()
+        self.destroy()
+        
+
     def salvar(self):        
         intro = """#!/usr/bin/python\n#-*- coding: utf-8 -*-\n\nfrom tkinter import *\n\n"""
         window = """%s = Tk()\n%s.geometry('%s')\n\n""" % (self.nomeVar, self.nomeVar, self.winfo_geometry())
@@ -42,17 +52,17 @@ class WidgetWindow(Toplevel, WWidget):
         code = intro + window + wg_code + rodape
         print(code)
 
-        # message file dialog
-        if self.filename:
-            with open(self.filename,'w') as arq:
-                arq.write(code)
-        else:
-            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
-            with open(fn,'w') as arq:
-                arq.write(code)
-
-            self.title(fn)
-            self.filename = fn
+##        # message file dialog
+##        if self.filename:
+##            with open(self.filename,'w') as arq:
+##                arq.write(code)
+##        else:
+##            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
+##            with open(fn,'w') as arq:
+##                arq.write(code)
+##
+##            self.title(fn)
+##            self.filename = fn
 
     def _parser_widget(self):
         wg_code = ''

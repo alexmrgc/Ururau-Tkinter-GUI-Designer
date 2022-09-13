@@ -144,7 +144,7 @@ class WRadiobutton(LabelFrame, WWidget):
         write += "opc = IntVar()\n"
         write += "dic = {'um':1, 'dois':2,'tres':3}\n"
         write += "for k, w in dic.items():\n"
-        write += "\tRadiobutton(lf, text=k, value=w).pack(anchor=W)\n"
+        write += "    Radiobutton(lf, text=k, variable=opc, value=w).pack(anchor=W)\n"
         write += "lf.place(x=%s, y=%s)\n" % (self.winfo_x(), self.winfo_y())
         write += "#################\n\n"
         return(write)

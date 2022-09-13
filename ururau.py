@@ -9,6 +9,7 @@ if __name__=='__main__':
     inspector = WidgetInspector()
     window = WidgetWindow(inspector)
     toolbox = WidgetToolbox(window, inspector)
+    window.set_toolbox(toolbox)
 
     print('Ururau Tkinter GUI Designer ok')
 

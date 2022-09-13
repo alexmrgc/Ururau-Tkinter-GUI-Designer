@@ -58,10 +58,20 @@ class WidgetInspector(Toplevel):
         if hasattr(self, 'main'):
             self.main.frame_out.destroy()
             self.main.frame_out.pack_forget()
+            self.frame_erro.destroy()
+            self.frame_erro.pack_forget()
             
+        # cria frames
         self.main = ScrollerLabelFrame(self, text=str(self.wg))
+        self.create_code_frame()
+        self.create_propertys_frame()
+        self.create_error_frame()
+        # layout
+        self.frame_code.grid(row=0, columnspan=2, sticky=EW)
+        self.frame_prop.grid(row=1, columnspan=2, sticky=EW)      
+        self.frame_erro.pack(fill=X)
 
-        # frame code
+    def create_code_frame(self):
         self.frame_code = LabelFrame(self.main.frame_inner, text='Código:')
         Label(self.frame_code, text='Nome da variável', font='Helvetica 10 bold').grid(row=0, column=0, sticky=W)
         e = Entry(self.frame_code)
@@ -70,7 +80,15 @@ class WidgetInspector(Toplevel):
         e.grid(row=0, column=1)
         e.insert(0, self.wg.nomeVar)
 
-        # frame propriedades
+        if self.wg.widgetName == 'tk_optionMenu':
+            Label(self.frame_code, text='Valores', font='Helvetica 10 bold').grid(row=1, column=0, sticky=W)
+            v = Entry(self.frame_code)
+            v.bind('<FocusOut>', self.set_widget)
+            v.bind('<Return>', self.set_widget)        
+            v.grid(row=1, column=1)
+            v.insert(0, self.wg.lista)
+
+    def create_propertys_frame(self):
         self.frame_prop = LabelFrame(self.main.frame_inner, text='Propriedades:')
         i = 1
         for p in self.prop:
@@ -85,15 +103,10 @@ class WidgetInspector(Toplevel):
             exec("e_%s.grid(row=%i, column=1)" % (p, i))
             i += 1
 
-        # frame erro
-        self.frame_erro = LabelFrame(self.main.frame_inner, text='Erro:')
+    def create_error_frame(self):
+        self.frame_erro = LabelFrame(self, text='Erro:')
         self.erro = Label(self.frame_erro, text=' ')
         self.erro.pack()
-
-        # layout
-        self.frame_code.grid(row=0, columnspan=2, sticky=EW)
-        self.frame_prop.grid(row=1, columnspan=2, sticky=EW)      
-        self.frame_erro.grid(row=2, columnspan=2, sticky=EW)
 
     def set_widget_name(self, event):
         nome = event.widget.get()
@@ -108,6 +121,7 @@ class WidgetInspector(Toplevel):
             wg[e.prop] = valor
         except TclError as erro:
             self.erro['text'] = erro
+            self.erro['fg'] = 'red'
         
         
 
