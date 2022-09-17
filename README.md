@@ -10,7 +10,10 @@ Esta é uma idéia que eu tive na faculdade a 15 anos atrás. E passado todo ess
 
 ###################
 
-A interface do Ururau Tkinter GUI Designer é composta basicamente por 3 elementos: Widget Toolbox, Widget Inspector e a janela principal. 
+Para executar o programa:
+$ python ururau.py
+
+A interface do Ururau Tkinter GUI Designer é composta basicamente por 3 elementos: Widget Toolbox, Widget Inspector e a janela principal Widget Window. 
 
 As propriedades dos widgets são geradas automaticamente através de introspecção, e podem ser modificadas dinamicamente através do Widget Inspector.
 
