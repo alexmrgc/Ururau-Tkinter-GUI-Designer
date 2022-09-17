@@ -2,26 +2,18 @@
 #-*- coding: utf-8 -*-
 
 from tkinter import *
+from tkinter import ttk
 from wgInspector import *
+from widgets import *
 from tkinter.filedialog import asksaveasfilename
 import sys
 
 
-class WidgetWindow(Toplevel, WWidget):
-    def __init__(self, inspector):
-        super().__init__()
-        WWidget.__init__(self)
-        self.geometry('350x400+230+20')
-        self.title('Widget Window')
-        self.inspector = inspector
-        self.filename = ''
+class DragFrame(ttk.Frame):
+    def __init__(self, master):
+        ttk.Frame.__init__(self, master)
+        self.nomeVar = 'mainframe'
 
-        # se fechar a janela abre dialogo de salvar arqquivo
-        self.protocol('WM_DELETE_WINDOW', self.close)
-
-    def set_toolbox(self, tb):
-        self.toolbox = tb
-        
     def drag_start(self, event):
         wg = event.widget
         wg.startX = event.x
@@ -34,40 +26,84 @@ class WidgetWindow(Toplevel, WWidget):
         wg.place(x=x, y=y)
 
     def on_release(self, event):
-        self.inspector.inspect_widget(event.widget)
+        self.master.toolbox.inspector.inspect_widget(event.widget)
+           
+
+class WidgetWindow(Toplevel):
+    def __init__(self, nomeVar='window'):
+        super().__init__()
+        self.geometry('350x400+230+20')
+        self.title(nomeVar)
+        self.filename = ''
+        self.nomeVar = nomeVar
+
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+        self.mainframe = DragFrame(self)
+        self.mainframe.grid(sticky=(N, S, W, E))
+
+        # pega as propriedades iniciais de window
+        self.mainframe.props_inicial = {}
+        for k in self.mainframe.keys():
+            self.mainframe.props_inicial[k] = self.mainframe[k]
+
+        # se fechar a janela abre dialogo de salvar arquivo
+        self.protocol('WM_DELETE_WINDOW', self.close)
+
+    def set_toolbox(self, toolbox):
+        self.toolbox = toolbox
 
     def close(self):
         self.salvar()
-        self.toolbox.novo['state'] = 'normal'
-        self.inspector.destroy()
+        self.toolbox.inspector.destroy()
         self.destroy()
-        
 
-    def salvar(self):        
-        intro = """#!/usr/bin/python\n#-*- coding: utf-8 -*-\n\nfrom tkinter import *\n\n"""
-        window = """%s = Tk()\n%s.geometry('%s')\n\n""" % (self.nomeVar, self.nomeVar, self.winfo_geometry())
-        wg_code = self._parser_widget()
-        rodape = "\n\n%s.mainloop()" % self.nomeVar
+        self.toolbox.novo['state'] = 'normal'
+        self.toolbox.salvar['state'] = 'disabled'
+        self.toolbox.buttons_off()
         
-        code = intro + window + wg_code + rodape
+    def salvar(self):        
+        code = """#!/usr/bin/python
+#-*- coding: utf-8 -*-
+
+from tkinter import *
+from tkinter import ttk
+"""
+
+        code += """
+%s = Tk()
+%s.geometry('%s')
+""" % (self.nomeVar, self.nomeVar, self.winfo_geometry())
+        
+        code += """
+mainframe = ttk.Frame(%s)
+mainframe.grid(row=0, column=0, sticky=(N,S,E,W))
+%s.columnconfigure(0, weight=1)
+%s.rowconfigure(0, weight=1)
+
+""" % (self.nomeVar, self.nomeVar, self.nomeVar)
+        
+        code += self._parser_widget()
+        code += "\n\n%s.mainloop()" % self.nomeVar
+        
         print(code)
 
-##        # message file dialog
-##        if self.filename:
-##            with open(self.filename,'w') as arq:
-##                arq.write(code)
-##        else:
-##            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
-##            with open(fn,'w') as arq:
-##                arq.write(code)
-##
-##            self.title(fn)
-##            self.filename = fn
+        # message file dialog
+        if self.filename:
+            with open(self.filename,'w') as arq:
+                arq.write(code)
+        else:
+            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
+            with open(fn,'w') as arq:
+                arq.write(code)
+
+            self.title(fn)
+            self.filename = fn
 
     def _parser_widget(self):
         wg_code = ''
         # pega todos os widgets dentro de window
-        for wg in self.children.values():
+        for wg in self.mainframe.children.values():
             props_atual = {}
             props_diff = {}
             
@@ -82,7 +118,6 @@ class WidgetWindow(Toplevel, WWidget):
 
             wg_code += wg.code(props_diff)
             
-        
         return(wg_code)
 
         
