@@ -65,20 +65,11 @@ class WidgetToolbox(Tk):
 
         
     def new_window(self):
-        for k, w in self.window.__dict__.items():
-            print(k, w)
-##        self.inspector.destroy()
-##        self.window.destroy()
-##        
-##        self.inspector = WidgetInspector()
-##        self.window = WidgetWindow()
-##        
-##        self.window.set_toolbox(self)
-##        self.inspector.set_toolbox(self)
-##
-##        self.inspector.inspect_widget(self.window)
-##        # estado dos botões de toolbox
-##        self.buttons_on()
+        self.inspector.deiconify()
+        self.window.deiconify()
+        self.inspector.inspect_widget(self.window)
+        # estado dos botões de toolbox
+        self.buttons_on()
 
     def add_widget(self, tipo):
         nomeVar = tipo + str(self.idx)
@@ -129,5 +120,5 @@ if __name__=='__main__':
 
 
     print('Widget ToolBox ok')
-    toolbox.mainloop()
+##    toolbox.mainloop()
     

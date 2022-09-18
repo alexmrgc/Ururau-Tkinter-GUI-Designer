@@ -35,19 +35,14 @@ class ScrollerLabelFrame(ttk.Frame):
         self.frame_id = self.canvas.create_window((0,0), window=self.frame_inner, anchor='nw')
 
 
-class EntryInspector(ttk.Entry):
-    def __init__(self, master, wg, prop):
-        ttk.Entry.__init__(self, master)
-        self.wg = wg
-        self.prop = prop
-        
-
 class WidgetInspector(Toplevel):
     def __init__(self):
         super().__init__()
         self.resizable(True, True)
         self.geometry('390x500+780+0')
         self.title('Widget Inspector')
+        self.wg = ''
+        self.prop = {}
         
     def set_toolbox(self, toolbox):
         self.toolbox = toolbox
@@ -58,16 +53,18 @@ class WidgetInspector(Toplevel):
         nome = event.widget.get()
         self.wg.nomeVar = nome
 
-    def set_widget(self, event):
-        # altera propriedade do widget
-        e = event.widget
-        valor = e.get()
-        wg = e.wg
+    def set_widget_prop(self, event, prop):
+        entry = event.widget
+        valor = entry.get()
+        valor_old = self.wg.props_inicial[prop]
+        print(prop, valor, valor_old)
         try:
-            wg[e.prop] = valor
-        except TclError as erro:
-            self.erro['text'] = erro
-            self.erro['fg'] = 'red'
+            self.wg[prop] = valor
+        except TclError as error:
+            entry.delete(0, END)
+            entry.insert(0, valor_old)
+            self.erro['text'] = error
+            self.erro['foreground'] = 'red'
 
     def inspect_widget(self, wg):
         # cria o inspector dinamicamente com widget.keys()
@@ -98,7 +95,6 @@ class WidgetInspector(Toplevel):
         e.bind('<Return>', self.set_widget_name)        
         e.grid(row=0, column=1)
         e.insert(0, self.wg.nomeVar)
-
             
         if self.wg.widgetName == 'tk_optionMenu':
             ttk.Label(self.frame_code, text='Valores', font='Helvetica 10 bold').grid(row=1, column=0, sticky=W)
@@ -111,16 +107,17 @@ class WidgetInspector(Toplevel):
     def create_propertys_frame(self):
         self.frame_prop = ttk.LabelFrame(self.main.frame_inner, text='Propriedades:')
         i = 1
-        for p in self.prop:
+
+        for p in self.wg.keys():
             # cria label : entry
             ttk.Label(self.frame_prop, text=p).grid(row=i, column=0, sticky=W)
-            exec("e_%s = EntryInspector(self.frame_prop, self.wg, '%s')" % (p, p))
+            entry = ttk.Entry(self.frame_prop)
             # cria eventos de entry
-            exec("e_%s.bind('<FocusOut>', self.set_widget)" % p)
-            exec("e_%s.bind('<Return>', self.set_widget)" % p)
+            entry.bind('<FocusOut>', lambda event, prop=p: self.set_widget_prop(event, prop))
+            entry.bind('<Return>', lambda event, prop=p: self.set_widget_prop(event, prop))
             # exibe o valor da propriedade em entry            
-            exec("""e_%s.insert(0, "%s")""" % (p, self.wg[p]))
-            exec("e_%s.grid(row=%i, column=1)" % (p, i))
+            entry.insert(0, self.wg[p])
+            exec("entry.grid(row=%i, column=1)" % i)
             i += 1
 
     def create_error_frame(self):

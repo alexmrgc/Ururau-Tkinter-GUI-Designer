@@ -55,8 +55,11 @@ class WidgetWindow(Toplevel):
 
     def close(self):
         self.salvar()
-        self.toolbox.inspector.destroy()
-        self.destroy()
+        self.toolbox.inspector.withdraw()
+        self.withdraw()
+
+        for widget in self.mainframe.winfo_children():
+            widget.destroy()
 
         self.toolbox.novo['state'] = 'normal'
         self.toolbox.salvar['state'] = 'disabled'
@@ -88,17 +91,17 @@ mainframe.grid(row=0, column=0, sticky=(N,S,E,W))
         
         print(code)
 
-        # message file dialog
-        if self.filename:
-            with open(self.filename,'w') as arq:
-                arq.write(code)
-        else:
-            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
-            with open(fn,'w') as arq:
-                arq.write(code)
-
-            self.title(fn)
-            self.filename = fn
+##        # message file dialog
+##        if self.filename:
+##            with open(self.filename,'w') as arq:
+##                arq.write(code)
+##        else:
+##            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
+##            with open(fn,'w') as arq:
+##                arq.write(code)
+##
+##            self.title(fn)
+##            self.filename = fn
 
     def _parser_widget(self):
         wg_code = ''

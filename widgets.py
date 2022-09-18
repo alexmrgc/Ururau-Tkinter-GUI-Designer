@@ -7,14 +7,14 @@ from random import randint
 class WWidget:
     def __init__(self, nomeVar):
         self.nomeVar = nomeVar
-        
+                
         self.props_inicial = {}
         for k in self.keys():
             self.props_inicial[k] = self[k]
-            
+           
     def code(self, props_diff):
         write = "### %s ###\n" % self.widgetName
-        write += "%s = %s(%s, **%s)\n" % (self.nomeVar, self.widgetName[5:].capitalize(), self.master.nomeVar, props_diff)
+        write += "%s = ttk.%s(%s, **%s)\n" % (self.nomeVar, self.widgetName[5:].capitalize(), self.master.nomeVar, props_diff)
         write += "%s.place(x=%s, y=%s)\n" % (self.nomeVar, self.winfo_x(), self.winfo_y())
         write += "#################\n\n"
         return(write)
