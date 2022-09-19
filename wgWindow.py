@@ -89,19 +89,19 @@ mainframe.grid(row=0, column=0, sticky=(N,S,E,W))
         code += self._parser_widget()
         code += "\n\n%s.mainloop()" % self.nomeVar
         
-        print(code)
+##        print(code)
 
-##        # message file dialog
-##        if self.filename:
-##            with open(self.filename,'w') as arq:
-##                arq.write(code)
-##        else:
-##            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
-##            with open(fn,'w') as arq:
-##                arq.write(code)
-##
-##            self.title(fn)
-##            self.filename = fn
+        # message file dialog
+        if self.filename:
+            with open(self.filename,'w') as arq:
+                arq.write(code)
+        else:
+            fn = asksaveasfilename(initialfile='app.py', defaultextension='*.py', filetypes=[('arquivos .py','*.py'),('todos arquivos','*.*')])
+            with open(fn,'w') as arq:
+                arq.write(code)
+
+            self.title(fn)
+            self.filename = fn
 
     def _parser_widget(self):
         wg_code = ''

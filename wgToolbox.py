@@ -37,11 +37,12 @@ class WidgetToolbox(Tk):
         self.label = ttk.Button(self.frame_main, text='Label', command=lambda: self.add_widget('WLabel'))
         self.entry = ttk.Button(self.frame_main, text='Entry', command=lambda: self.add_widget('WEntry'))
         self.text = ttk.Button(self.frame_main, text='Text', command=lambda: self.add_widget('WText'))
-        self.scale = ttk.Button(self.frame_main, text='Scale', command=lambda: self.add_widget('WScale'))
+        self.combo = ttk.Button(self.frame_main, text='Combobox', command=lambda: self.add_widget('WCombobox'))
         self.check = ttk.Button(self.frame_main, text='Checkbutton', command=lambda: self.add_widget('WCheckbutton'))
         self.drop = ttk.Button(self.frame_main, text='OptionMenu', command=lambda: self.add_widget('WOptionMenu'))
         self.radio = ttk.Button(self.frame_main, text='RadioButton', command=lambda: self.add_widget('WRadiobutton'))
-
+        self.scale = ttk.Button(self.frame_main, text='Scale', command=lambda: self.add_widget('WScale'))
+        
         # layout frame top
         self.frame_top.pack(side=TOP, fill=X)
         self.novo.pack(side=LEFT)
@@ -56,10 +57,11 @@ class WidgetToolbox(Tk):
         self.label.pack(fill=X)
         self.entry.pack(fill=X)
         self.text.pack(fill=X)
-        self.scale.pack(fill=X)
+        self.combo.pack(fill=X)
         self.check.pack(fill=X)
         self.drop.pack(fill=X)
         self.radio.pack(fill=X)
+        self.scale.pack(fill=X)
 
         mainframe.grid(sticky=(N, S, W, E))
 

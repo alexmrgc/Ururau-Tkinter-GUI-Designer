@@ -43,6 +43,26 @@ class WLabelFrame(ttk.LabelFrame, WWidget):
         write += "#################\n\n"
         return(write)
                 
+class WCombobox(ttk.Combobox, WWidget):
+    def __init__(self, mf, nomeVar):
+        self.combovar = StringVar()
+        ttk.Combobox.__init__(self, mf, textvariable=self.combovar)
+        self['values'] = ('um','dois','tres','quatro')
+        WWidget.__init__(self, nomeVar)
+        self.place(x=randint(20, 330), y=randint(20, 380))
+        self.drag_n_drop(mf)
+        self.state(['disabled'])
+        
+    def code(self, props_diff):
+        print(props_diff)
+        write = "### %s ###\n" % self.widgetName
+        write += "combovar = StringVar()\n"
+        write += """%s = ttk.Combobox(%s, textvariable=combovar, **%s)\n""" % (self.nomeVar, self.master.nomeVar, props_diff)
+        write += """%s['values'] = ('um','dois','tres','quatro')\n""" % self.nomeVar
+        write += "%s.place(x=%s, y=%s)\n" % (self.nomeVar, self.winfo_x(), self.winfo_y())
+        write += "#################\n\n"
+        return(write)
+    
 
 class WButton(ttk.Button, WWidget):
     def __init__(self, mf, nomeVar):
@@ -96,6 +116,8 @@ class WScale(ttk.Scale, WWidget):
         self['from_'] = 0
         self['to'] = 100
         self['orient'] = 'horizontal'
+        self.state(['disabled'])
+
 
         
 class WCheckbutton(ttk.Checkbutton, WWidget):
@@ -105,6 +127,7 @@ class WCheckbutton(ttk.Checkbutton, WWidget):
         self.place(x=randint(20, 330), y=randint(20, 380))
         self.drag_n_drop(mf)
         self['text'] = 'check'
+        self.state(['disabled'])
 
 
 class WOptionMenu(ttk.OptionMenu, WWidget):
@@ -117,6 +140,7 @@ class WOptionMenu(ttk.OptionMenu, WWidget):
         WWidget.__init__(self, nomeVar)
         self.place(x=randint(20, 330), y=randint(20, 380))
         self.drag_n_drop(mf)
+        self.state(['disabled'])
 
     def code(self, props_diff):
         write = "### OptionMenu ###\n"
